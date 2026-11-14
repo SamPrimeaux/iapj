@@ -1,0 +1,147 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap');
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* ==========================================================================
+   IAPJ Theme Tokens — InnerAnimal Plain Jane Editorial System
+   ========================================================================== */
+
+:root {
+  color-scheme: light dark;
+
+  /* Surfaces */
+  --iapj-bg: #ffffff;
+  --iapj-surface-subtle: #faf9f6;
+  --iapj-surface-elevated: #ffffff;
+  --iapj-overlay-scrim: rgba(17, 17, 17, 0.28);
+
+  /* Ink & Borders */
+  --iapj-text-primary: #141413;
+  --iapj-text-body: #3f3e3c;
+  --iapj-text-muted: #767470;
+  --iapj-border: #e8e6e1;
+  --iapj-border-strong: #141413;
+
+  /* Interactive Accents */
+  --iapj-accent: #141413;
+  --iapj-accent-contrast: #ffffff;
+  --iapj-link-hover: #575550;
+
+  /* Invariant Media Scrim Tokens (always dark backdrop + light ink) */
+  --iapj-media-backdrop: #0e0e0d;
+  --iapj-media-ink: #f4f3ef;
+  --iapj-media-ink-muted: rgba(244, 243, 239, 0.78);
+
+  /* Typography */
+  --iapj-font-display: "Playfair Display", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --iapj-font-sans: "DM Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* Layout & Rhythm */
+  --iapj-container-max: 1200px;
+  --iapj-prose-max: 68ch;
+  --iapj-drawer-width: 340px;
+  --iapj-radius: 0px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --iapj-bg: #0e0e0d;
+    --iapj-surface-subtle: #151513;
+    --iapj-surface-elevated: #181816;
+    --iapj-overlay-scrim: rgba(0, 0, 0, 0.62);
+
+    --iapj-text-primary: #f4f3ef;
+    --iapj-text-body: #cfcdc7;
+    --iapj-text-muted: #8e8c86;
+    --iapj-border: #262522;
+    --iapj-border-strong: #f4f3ef;
+
+    --iapj-accent: #f4f3ef;
+    --iapj-accent-contrast: #0e0e0d;
+    --iapj-link-hover: #b8b6af;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --iapj-bg: #0e0e0d;
+  --iapj-surface-subtle: #151513;
+  --iapj-surface-elevated: #181816;
+  --iapj-overlay-scrim: rgba(0, 0, 0, 0.62);
+
+  --iapj-text-primary: #f4f3ef;
+  --iapj-text-body: #cfcdc7;
+  --iapj-text-muted: #8e8c86;
+  --iapj-border: #262522;
+  --iapj-border-strong: #f4f3ef;
+
+  --iapj-accent: #f4f3ef;
+  --iapj-accent-contrast: #0e0e0d;
+  --iapj-link-hover: #b8b6af;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --iapj-bg: #ffffff;
+  --iapj-surface-subtle: #faf9f6;
+  --iapj-surface-elevated: #ffffff;
+  --iapj-overlay-scrim: rgba(17, 17, 17, 0.28);
+
+  --iapj-text-primary: #141413;
+  --iapj-text-body: #3f3e3c;
+  --iapj-text-muted: #767470;
+  --iapj-border: #e8e6e1;
+  --iapj-border-strong: #141413;
+
+  --iapj-accent: #141413;
+  --iapj-accent-contrast: #ffffff;
+  --iapj-link-hover: #575550;
+}
+
+@theme {
+  --font-sans: var(--iapj-font-sans);
+  --font-serif: var(--iapj-font-display);
+
+  --color-paper: var(--iapj-bg);
+  --color-surface-subtle: var(--iapj-surface-subtle);
+  --color-surface-elevated: var(--iapj-surface-elevated);
+  --color-ink: var(--iapj-text-primary);
+  --color-ink-body: var(--iapj-text-body);
+  --color-ink-light: var(--iapj-text-muted);
+  --color-hairline: var(--iapj-border);
+  --color-accent: var(--iapj-accent);
+}
+
+@layer base {
+  body {
+    background-color: var(--iapj-bg);
+    color: var(--iapj-text-primary);
+    font-family: var(--iapj-font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--iapj-font-display);
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  ::selection {
+    background-color: var(--iapj-border);
+    color: var(--iapj-text-primary);
+  }
+}
+
+.iapj-prose {
+  --tw-prose-body: var(--iapj-text-body);
+  --tw-prose-headings: var(--iapj-text-primary);
+  --tw-prose-lead: var(--iapj-text-primary);
+  --tw-prose-links: var(--iapj-text-primary);
+  --tw-prose-bold: var(--iapj-text-primary);
+  --tw-prose-quotes: var(--iapj-text-primary);
+  --tw-prose-quote-borders: var(--iapj-border);
+  --tw-prose-captions: var(--iapj-text-muted);
+  --tw-prose-hr: var(--iapj-border);
+  max-width: var(--iapj-prose-max);
+}

@@ -1,0 +1,155 @@
+{
+  "schema": "inneranimal.site.v1",
+  "theme": "iapj",
+  "brand": {
+    "title": "INNERANIMAL",
+    "tagline": "Field manuals, Systematic Autonomous Machinery (SAM) architecture, and editorial design systems from InnerAnimalMedia.",
+    "heroTitlePrefix": "Systems built with",
+    "heroTitleHighlight": "deliberate",
+    "heroTitleSuffix": "restraint.",
+    "heroLead": "Engineering cookbooks, typed agent architecture, and dual-mode UI/UX standards powering AgentSam and multi-domain publishing.",
+    "copyrightHolder": "InnerAnimalMedia",
+    "attribution": {
+      "prefix": "Built on the",
+      "sourceLabel": "IAPJ Editorial System",
+      "sourceRef": "internal://about",
+      "suffix": "Bespoke studio plates and zero hardcoded runtime asset URLs."
+    }
+  },
+  "contact": {
+    "heading": "Connect & Inquiries",
+    "email": "hey@inneranimalmedia.com",
+    "emailRef": "social://email",
+    "socials": [
+      {
+        "id": "github",
+        "label": "GitHub",
+        "handle": "inneranimal",
+        "urlRef": "social://github"
+      },
+      {
+        "id": "twitter",
+        "label": "X / Twitter",
+        "handle": "@inneranimal",
+        "urlRef": "social://twitter"
+      },
+      {
+        "id": "substack",
+        "label": "Dispatches",
+        "handle": "InnerAnimalMedia",
+        "urlRef": "social://substack"
+      }
+    ]
+  },
+  "author": {
+    "name": "InnerAnimalMedia",
+    "avatarRef": "media://author-portrait",
+    "portraitRef": "media://author-portrait",
+    "bio": "Architecting Systematic Autonomous Machinery (SAM), hybrid edge-to-local Go runtimes, and multi-domain editorial systems.",
+    "aboutHeading": "About InnerAnimalMedia",
+    "aboutParagraphs": [
+      "InnerAnimalMedia builds developer tooling, autonomous agent infrastructure, and multi-domain publishing systems designed around clarity, determinism, and editorial restraint.",
+      "Across the AgentSam runtime, the ASBD design system, and the Plain Jane (IAPJ) theme architecture, every layer shares one rule: keep contracts explicit, eliminate fragile runtime assumptions, and pair generative capability with verifiable engineering discipline.",
+      "This journal serves as both our public engineering library and a canonical knowledge base for designing, benchmarking, and shipping resilient software."
+    ]
+  },
+  "navigation": {
+    "headerCta": {
+      "label": "About",
+      "path": "/about"
+    },
+    "drawer": [
+      { "label": "Home", "path": "/" },
+      { "label": "Essays", "path": "/essays" },
+      { "label": "SAM Docs", "path": "/sam" },
+      { "label": "Design Systems", "path": "/design" },
+      { "label": "Visual Plates", "path": "/photography" },
+      { "label": "About", "path": "/about" },
+      { "label": "Search", "path": "/search" }
+    ],
+    "footerGroups": [
+      {
+        "heading": "Explore",
+        "links": [
+          { "label": "All Essays", "path": "/essays" },
+          { "label": "SAM Architecture", "path": "/sam" },
+          { "label": "Design Systems", "path": "/design" },
+          { "label": "Visual Plates", "path": "/photography" },
+          { "label": "About", "path": "/about" }
+        ]
+      }
+    ],
+    "footerConnectHeading": "Connect",
+    "footerConnectLinks": [
+      { "id": "email", "label": "hey@inneranimalmedia.com", "urlRef": "social://email" },
+      { "id": "github", "label": "GitHub", "urlRef": "social://github" },
+      { "id": "twitter", "label": "X / Twitter", "urlRef": "social://twitter" },
+      { "id": "substack", "label": "Dispatches", "urlRef": "social://substack" }
+    ]
+  },
+  "linkCatalog": {
+    "internal://about": "/about",
+    "social://github": "https://github.com/inneranimal",
+    "social://twitter": "https://x.com/inneranimal",
+    "social://substack": "https://inneranimalmedia.com",
+    "social://email": "mailto:hey@inneranimalmedia.com"
+  },
+  "mediaCatalog": {
+    "media://author-portrait": {
+      "provider": "studio-generated",
+      "url": "/src/assets/images/author_studio_portrait_1794695293041.jpg",
+      "alt": "Editorial studio portrait at a minimalist drafting desk",
+      "caption": "Studio Drafting Desk — InnerAnimalMedia",
+      "width": 900,
+      "height": 1200
+    },
+    "media://cover-structured-decisions": {
+      "provider": "studio-generated",
+      "url": "/src/assets/images/cover_structured_decisions_1794695289898.jpg",
+      "alt": "Brushed black anodized aluminum routing switchboard with muted violet pins",
+      "caption": "Typed Decision Switchboard — Deterministic Routing Study",
+      "width": 1600,
+      "height": 900
+    },
+    "media://cover-infra-cookbooks": {
+      "provider": "studio-generated",
+      "url": "/src/assets/images/cover_infra_cookbooks_1794695290006.jpg",
+      "alt": "Architectural grid blueprints, steel calipers, and matte dark keyboard on concrete",
+      "caption": "Infrastructure Blueprints & Caliper Inspection Bench",
+      "width": 1600,
+      "height": 900
+    },
+    "media://cover-native-runtime": {
+      "provider": "studio-generated",
+      "url": "/src/assets/images/cover_native_runtime_1794695290674.jpg",
+      "alt": "Matte obsidian and machined titanium edge compute module on travertine stone",
+      "caption": "Hybrid Edge-to-Local Compute Enclosure",
+      "width": 1600,
+      "height": 900
+    },
+    "media://cover-ux-principles": {
+      "provider": "studio-generated",
+      "url": "/src/assets/images/cover_ux_principles_1794695290502.jpg",
+      "alt": "Grid paper, matte black pen, brass ruler, and modular cards on alabaster",
+      "caption": "Modular Layout Grid & Editorial Hierarchy Specimen",
+      "width": 1600,
+      "height": 900
+    },
+    "media://cover-asbd-hero": {
+      "provider": "studio-generated",
+      "url": "/src/assets/images/cover_asbd_hero_1794695346470.jpg",
+      "alt": "Exploded 3D mechanical assembly rendered in brushed steel and dark slate",
+      "caption": "AgentSam Learn — Asymmetric Exploded Mechanical Assembly",
+      "width": 1600,
+      "height": 900
+    },
+    "media://cover-cms-platform": {
+      "provider": "studio-generated",
+      "url": "/src/assets/images/cover_cms_platform_1794695291502.jpg",
+      "alt": "Modular concrete and glass architectural pavilions under overcast light",
+      "caption": "Modular Concrete Pavilions — Multi-Domain Section Study",
+      "width": 1200,
+      "height": 900
+    }
+  }
+}
