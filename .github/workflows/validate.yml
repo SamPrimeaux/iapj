@@ -1,16 +1,17 @@
-name: Validate blog template dependencies
+name: Validate blog template
 
 on:
-  pull_request:
   push:
-    branches:
-      - dependabot/npm_and_yarn/npm_and_yarn-9b7d5a8e7a
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 permissions:
   contents: read
 
 jobs:
-  validate:
+  npm:
+    name: npm install, typecheck and build
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -18,25 +19,18 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - uses: oven-sh/setup-bun@v2
-      - name: Reconcile npm and Bun lockfiles
-        run: |
-          npm install --package-lock-only --ignore-scripts
-          bun install --lockfile-only
-      - name: Export reproducible lockfiles for the PR fix
-        shell: bash
-        run: |
-          node <<'NODE'
-          const fs = require('node:fs');
-          for (const name of ['package-lock.json', 'bun.lock']) {
-            const encoded = fs.readFileSync(name).toString('base64');
-            console.log('BEGIN_LOCK ' + name);
-            for (let i = 0; i < encoded.length; i += 1024) {
-              console.log('LOCK_CHUNK ' + encoded.slice(i, i + 1024));
-            }
-            console.log('END_LOCK ' + name);
-          }
-          NODE
+          cache: npm
       - run: npm ci
       - run: npm run lint
       - run: npm run build
+
+  bun:
+    name: Bun frozen lockfile, typecheck and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: bun run lint
+      - run: bun run build
