@@ -40,8 +40,7 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
           (a) =>
             a.title.toLowerCase().includes(normalized) ||
             a.excerpt.toLowerCase().includes(normalized) ||
-            a.category.toLowerCase().includes(normalized) ||
-            (a.location && a.location.toLowerCase().includes(normalized)) ||
+            a.categoryLabel.toLowerCase().includes(normalized) ||
             a.tags.some((t) => t.toLowerCase().includes(normalized))
         )
       : [];
@@ -60,7 +59,7 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.25 }}
-          className="fixed inset-0 z-[100] bg-[var(--iapj-surface-elevated)]/95 backdrop-blur-md flex flex-col"
+          className="fixed inset-0 z-[100] bg-[var(--iapj-surface-elevated)]/95 backdrop-blur-xl flex flex-col"
         >
           <div className="flex justify-end p-6">
             <button
@@ -79,11 +78,11 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
                 <Search className="absolute left-0 top-1/2 -translate-y-1/2 h-7 w-7 text-[var(--iapj-text-muted)]" />
                 <input
                   type="text"
-                  placeholder="Search essays, travel notes, topics..."
+                  placeholder="Search blog posts, SAM docs, design guides..."
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   autoFocus
-                  className="w-full bg-transparent border-b-2 border-[var(--iapj-border)] py-4 pl-11 pr-4 text-2xl sm:text-3xl font-serif text-[var(--iapj-text-primary)] placeholder:text-[var(--iapj-text-muted)]/60 focus:border-[var(--iapj-border-strong)] focus:outline-none transition-colors"
+                  className="w-full bg-transparent border-b-2 border-[var(--iapj-border)] py-4 pl-11 pr-4 text-2xl sm:text-3xl font-semibold tracking-tight text-[var(--iapj-text-primary)] placeholder:text-[var(--iapj-text-muted)]/60 focus:border-[var(--iapj-border-strong)] focus:outline-none transition-colors"
                 />
               </form>
 
@@ -113,18 +112,18 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
                     className="border-b border-[var(--iapj-border)] pb-6"
                   >
                     <Link
-                      to={`/essays/${article.slug}`}
+                      to={article.canonicalPath ?? `/blog/${article.slug}`}
                       onClick={onClose}
                       className="group block"
                     >
-                      <div className="flex items-center gap-2 text-xs font-medium tracking-wider text-[var(--iapj-text-muted)] mb-2">
-                        <span>{article.tags[0]}</span>
+                      <div className="flex items-center gap-2 text-xs font-medium text-[var(--iapj-text-muted)] mb-2">
+                        <span>{article.categoryLabel}</span>
                         <span aria-hidden="true">·</span>
                         <span>{article.date}</span>
                         <span aria-hidden="true">·</span>
-                        <span>{article.readTime}</span>
+                        <span className="tabular-nums">{article.readTime}</span>
                       </div>
-                      <h3 className="font-serif text-2xl text-[var(--iapj-text-primary)] group-hover:text-[var(--iapj-link-hover)] transition-colors mb-2">
+                      <h3 className="text-2xl font-semibold tracking-tight text-[var(--iapj-text-primary)] group-hover:text-[var(--iapj-link-hover)] transition-colors mb-2">
                         {article.title}
                       </h3>
                       <p className="text-[var(--iapj-text-body)] line-clamp-2 text-sm leading-relaxed">

@@ -15,38 +15,37 @@ export function Photography() {
     <div className="flex min-h-screen flex-col bg-[var(--iapj-bg)] text-[var(--iapj-text-primary)]">
       <Header />
       <main className="flex-1">
-        <div className="mx-auto max-w-[var(--iapj-container-max)] px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[var(--iapj-container-max)] px-4 py-14 sm:px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
             className="mb-12"
           >
             <p className="mb-3 text-xs font-medium tracking-wider text-[var(--iapj-text-muted)]">
-              Visual Archive
+              Portfolio &amp; Visual Plates
             </p>
-            <h1 className="font-serif text-5xl font-medium tracking-tight text-[var(--iapj-text-primary)] md:text-6xl">
-              Studio &amp; Hardware Plates
+            <h1 className="text-4xl font-bold tracking-tight text-[var(--iapj-text-primary)] sm:text-6xl">
+              Selected Work &amp; Hardware Studies
             </h1>
             <p className="mt-4 text-lg text-[var(--iapj-text-body)] max-w-2xl leading-relaxed">
-              Editorial photography, industrial enclosures, architectural studies, and mechanical assemblies produced for InnerAnimalMedia and AgentSam.
+              Industrial enclosures, architectural studies, design system specimens, and mechanical assemblies produced for InnerAnimalMedia and AgentSam.
             </p>
           </motion.div>
-        </div>
 
-        {/* Full Bleed Masonry Grid */}
-        <div className="w-full px-1 pb-1">
-          <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-1 space-y-1">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {photos.map((photo, idx) => (
               <motion.button
                 type="button"
                 key={photographyRefs[idx]}
-                initial={{ opacity: 0, y: 18 }}
+                initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "100px" }}
-                transition={{ duration: 0.55, delay: (idx % 4) * 0.08 }}
+                viewport={{ once: true, margin: "80px" }}
+                transition={{ duration: 0.5, delay: (idx % 3) * 0.06 }}
                 onClick={() => setSelectedIndex(idx)}
-                className="group relative block w-full break-inside-avoid overflow-hidden bg-[var(--iapj-surface-subtle)] cursor-zoom-in focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--iapj-accent)]"
+                className={`group relative overflow-hidden rounded-2xl iapj-clay-card cursor-zoom-in text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--iapj-accent)] ${
+                  idx === 0 || idx === 4 ? "sm:col-span-2 aspect-[16/9]" : "aspect-[4/3]"
+                }`}
               >
                 <FadeImage
                   src={photo.src}
@@ -54,12 +53,12 @@ export function Photography() {
                   width={photo.width}
                   height={photo.height}
                   loading="lazy"
-                  className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                 {photo.caption && (
-                  <div className="absolute bottom-0 left-0 w-full p-6 translate-y-3 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 text-left">
-                    <p className="text-[var(--iapj-media-ink)] font-serif text-lg tracking-wide">
+                  <div className="absolute bottom-0 left-0 w-full p-6 translate-y-2 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                    <p className="text-[var(--iapj-media-ink)] text-lg font-semibold tracking-tight">
                       {photo.caption}
                     </p>
                   </div>

@@ -7,6 +7,7 @@ import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { resolveMedia } from "../lib/mediaResolver";
 import { FadeImage } from "../components/FadeImage";
+import { EditorialMediaPlate } from "../components/EditorialMediaPlate";
 
 export function Search() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -51,10 +52,10 @@ export function Search() {
             transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
           >
             <p className="mb-3 text-xs font-medium tracking-wider text-[var(--iapj-text-muted)]">
-              Index
+              Archive
             </p>
-            <h1 className="font-serif text-4xl font-medium tracking-tight text-[var(--iapj-text-primary)] sm:text-5xl">
-              Search the Journal
+            <h1 className="text-4xl font-bold tracking-tight text-[var(--iapj-text-primary)] sm:text-5xl">
+              Search the Blog
             </h1>
 
             <div className="relative mt-10">
@@ -65,7 +66,7 @@ export function Search() {
                 onChange={(e) => handleQueryChange(e.target.value)}
                 placeholder="Search by title, architecture, or topic..."
                 aria-label="Search articles"
-                className="w-full bg-transparent border-b-2 border-[var(--iapj-border)] py-4 pl-10 pr-10 text-2xl font-serif text-[var(--iapj-text-primary)] placeholder:text-[var(--iapj-text-muted)]/60 focus:border-[var(--iapj-border-strong)] focus:outline-none transition-colors"
+                className="w-full bg-transparent border-b-2 border-[var(--iapj-border)] py-4 pl-10 pr-10 text-2xl font-semibold tracking-tight text-[var(--iapj-text-primary)] placeholder:text-[var(--iapj-text-muted)]/60 focus:border-[var(--iapj-border-strong)] focus:outline-none transition-colors"
               />
               {query && (
                 <button
@@ -97,7 +98,7 @@ export function Search() {
           <div className="mt-14 border-t border-[var(--iapj-border)]">
             {results.length === 0 ? (
               <div className="py-16 text-center">
-                <p className="font-serif text-2xl text-[var(--iapj-text-primary)]">
+                <p className="text-2xl font-semibold text-[var(--iapj-text-primary)]">
                   No entries matched &ldquo;{query}&rdquo;
                 </p>
                 <p className="mt-3 text-sm text-[var(--iapj-text-muted)]">
@@ -111,26 +112,34 @@ export function Search() {
                   return (
                     <li key={article.id} className="py-8">
                       <Link
-                        to={`/essays/${article.slug}`}
+                        to={article.canonicalPath ?? `/blog/${article.slug}`}
                         className="group flex flex-col gap-6 sm:flex-row sm:items-center"
                       >
-                        <div className="aspect-[16/10] w-full sm:w-48 shrink-0 overflow-hidden bg-[var(--iapj-surface-subtle)]">
-                          <FadeImage
-                            src={cover.src}
-                            alt={cover.alt || article.title}
-                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                            loading="lazy"
-                          />
+                        <div className="aspect-[16/10] w-full sm:w-48 shrink-0 overflow-hidden rounded-xl iapj-clay-card">
+                          {cover.src ? (
+                            <FadeImage
+                              src={cover.src}
+                              alt={cover.alt || article.title}
+                              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                              loading="lazy"
+                            />
+                          ) : (
+                            <EditorialMediaPlate
+                              plateKey={article.coverImageRef}
+                              alt={article.title}
+                              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            />
+                          )}
                         </div>
                         <div className="flex-1">
-                          <div className="mb-2 flex flex-wrap items-center gap-2 text-xs font-medium tracking-wider text-[var(--iapj-text-muted)]">
+                          <div className="mb-2 flex flex-wrap items-center gap-2 text-xs font-medium text-[var(--iapj-text-muted)]">
                             <span>{article.categoryLabel}</span>
                             <span aria-hidden="true">·</span>
-                            <span>{article.date}</span>
+                            <span>Created: {article.date}</span>
                             <span aria-hidden="true">·</span>
                             <span className="tabular-nums">{article.readTime}</span>
                           </div>
-                          <h2 className="font-serif text-2xl text-[var(--iapj-text-primary)] group-hover:text-[var(--iapj-link-hover)] transition-colors">
+                          <h2 className="text-2xl font-semibold tracking-tight text-[var(--iapj-text-primary)] group-hover:text-[var(--iapj-link-hover)] transition-colors">
                             {article.title}
                           </h2>
                           <p className="mt-2 text-sm text-[var(--iapj-text-body)] line-clamp-2 leading-relaxed">

@@ -1,106 +1,158 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
 /* ==========================================================================
-   IAPJ Theme Tokens — InnerAnimal Plain Jane Editorial System
+   IAPJ Theme Package Tokens — Blended Light/Dark, Glassmorphic & Claymorphic
    ========================================================================== */
 
 :root {
   color-scheme: light dark;
 
-  /* Surfaces */
+  /* Core Surfaces */
   --iapj-bg: #ffffff;
-  --iapj-surface-subtle: #faf9f6;
+  --iapj-surface-subtle: #f5f5f7;
   --iapj-surface-elevated: #ffffff;
-  --iapj-overlay-scrim: rgba(17, 17, 17, 0.28);
+  --iapj-surface-contrast: #121216;
+  --iapj-surface-contrast-ink: #f7f7fa;
+  --iapj-surface-contrast-muted: #9b9ba6;
+
+  /* Glassmorphic Header & Overlays */
+  --iapj-glass-bg: rgba(255, 255, 255, 0.78);
+  --iapj-glass-border: rgba(20, 20, 22, 0.08);
+  --iapj-overlay-scrim: rgba(12, 12, 16, 0.76);
+
+  /* Claymorphic Soft Depth */
+  --iapj-clay-shadow:
+    0 18px 40px -24px rgba(16, 16, 22, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --iapj-clay-shadow-hover:
+    0 24px 48px -20px rgba(16, 16, 22, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
 
   /* Ink & Borders */
-  --iapj-text-primary: #141413;
-  --iapj-text-body: #3f3e3c;
-  --iapj-text-muted: #767470;
-  --iapj-border: #e8e6e1;
-  --iapj-border-strong: #141413;
+  --iapj-text-primary: #141416;
+  --iapj-text-body: #3e3e44;
+  --iapj-text-muted: #707078;
+  --iapj-border: #e6e6eb;
+  --iapj-border-strong: #141416;
 
   /* Interactive Accents */
-  --iapj-accent: #141413;
+  --iapj-accent: #141416;
   --iapj-accent-contrast: #ffffff;
-  --iapj-link-hover: #575550;
+  --iapj-link-hover: #52525c;
 
-  /* Invariant Media Scrim Tokens (always dark backdrop + light ink) */
-  --iapj-media-backdrop: #0e0e0d;
-  --iapj-media-ink: #f4f3ef;
-  --iapj-media-ink-muted: rgba(244, 243, 239, 0.78);
+  /* Opposing Global Footer Tokens (Light Page -> Deep Dark Footer + Light 3D GLB) */
+  --iapj-footer-bg: #0e0e12;
+  --iapj-footer-text: #f6f6f9;
+  --iapj-footer-muted: #9898a3;
+  --iapj-footer-border: rgba(255, 255, 255, 0.11);
 
-  /* Typography */
-  --iapj-font-display: "Playfair Display", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-  --iapj-font-sans: "DM Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  /* Fullscreen Menu Overlay (Deep Obsidian Glass) */
+  --iapj-menu-bg: #111115;
+  --iapj-menu-text: #ffffff;
+  --iapj-menu-muted: #9b9ba6;
+  --iapj-menu-border: rgba(255, 255, 255, 0.12);
+
+  /* Invariant Media Scrim Tokens */
+  --iapj-media-backdrop: #0e0e12;
+  --iapj-media-ink: #f6f6f9;
+  --iapj-media-ink-muted: rgba(246, 246, 249, 0.78);
+
+  /* Typography (2+1 Rule: Plus Jakarta Sans + Playfair Display + JetBrains Mono) */
+  --iapj-font-display: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --iapj-font-serif: "Playfair Display", ui-serif, Georgia, serif;
+  --iapj-font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --iapj-font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 
   /* Layout & Rhythm */
-  --iapj-container-max: 1200px;
+  --iapj-container-max: 1240px;
   --iapj-prose-max: 68ch;
-  --iapj-drawer-width: 340px;
-  --iapj-radius: 0px;
+  --iapj-radius-card: 16px;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --iapj-bg: #0e0e0d;
-    --iapj-surface-subtle: #151513;
-    --iapj-surface-elevated: #181816;
-    --iapj-overlay-scrim: rgba(0, 0, 0, 0.62);
+    --iapj-bg: #0d0d11;
+    --iapj-surface-subtle: #16161c;
+    --iapj-surface-elevated: #1b1b22;
+    --iapj-surface-contrast: #16161d;
+    --iapj-surface-contrast-ink: #f6f6f9;
+    --iapj-surface-contrast-muted: #9b9ba6;
 
-    --iapj-text-primary: #f4f3ef;
-    --iapj-text-body: #cfcdc7;
-    --iapj-text-muted: #8e8c86;
-    --iapj-border: #262522;
-    --iapj-border-strong: #f4f3ef;
+    --iapj-glass-bg: rgba(15, 15, 20, 0.78);
+    --iapj-glass-border: rgba(255, 255, 255, 0.1);
+    --iapj-overlay-scrim: rgba(0, 0, 0, 0.8);
 
-    --iapj-accent: #f4f3ef;
-    --iapj-accent-contrast: #0e0e0d;
-    --iapj-link-hover: #b8b6af;
+    --iapj-clay-shadow:
+      0 18px 40px -22px rgba(0, 0, 0, 0.65),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    --iapj-clay-shadow-hover:
+      0 26px 52px -18px rgba(0, 0, 0, 0.8),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+
+    --iapj-text-primary: #f6f6f9;
+    --iapj-text-body: #c9c9d1;
+    --iapj-text-muted: #8e8e99;
+    --iapj-border: rgba(255, 255, 255, 0.1);
+    --iapj-border-strong: #f6f6f9;
+
+    --iapj-accent: #f6f6f9;
+    --iapj-accent-contrast: #0d0d11;
+    --iapj-link-hover: #b8b8c2;
+
+    /* Opposing Global Footer Tokens (Dark Page -> Crisp Light Footer + Dark 3D GLB) */
+    --iapj-footer-bg: #f3f3f6;
+    --iapj-footer-text: #121216;
+    --iapj-footer-muted: #5d5d66;
+    --iapj-footer-border: rgba(18, 18, 22, 0.12);
   }
 }
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --iapj-bg: #0e0e0d;
-  --iapj-surface-subtle: #151513;
-  --iapj-surface-elevated: #181816;
-  --iapj-overlay-scrim: rgba(0, 0, 0, 0.62);
+  --iapj-bg: #0d0d11;
+  --iapj-surface-subtle: #16161c;
+  --iapj-surface-elevated: #1b1b22;
+  --iapj-surface-contrast: #16161d;
+  --iapj-surface-contrast-ink: #f6f6f9;
+  --iapj-surface-contrast-muted: #9b9ba6;
 
-  --iapj-text-primary: #f4f3ef;
-  --iapj-text-body: #cfcdc7;
-  --iapj-text-muted: #8e8c86;
-  --iapj-border: #262522;
-  --iapj-border-strong: #f4f3ef;
+  --iapj-glass-bg: rgba(15, 15, 20, 0.78);
+  --iapj-glass-border: rgba(255, 255, 255, 0.1);
+  --iapj-overlay-scrim: rgba(0, 0, 0, 0.8);
 
-  --iapj-accent: #f4f3ef;
-  --iapj-accent-contrast: #0e0e0d;
-  --iapj-link-hover: #b8b6af;
+  --iapj-clay-shadow:
+    0 18px 40px -22px rgba(0, 0, 0, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --iapj-clay-shadow-hover:
+    0 26px 52px -18px rgba(0, 0, 0, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+
+  --iapj-text-primary: #f6f6f9;
+  --iapj-text-body: #c9c9d1;
+  --iapj-text-muted: #8e8e99;
+  --iapj-border: rgba(255, 255, 255, 0.1);
+  --iapj-border-strong: #f6f6f9;
+
+  --iapj-accent: #f6f6f9;
+  --iapj-accent-contrast: #0d0d11;
+  --iapj-link-hover: #b8b8c2;
+
+  --iapj-footer-bg: #f3f3f6;
+  --iapj-footer-text: #121216;
+  --iapj-footer-muted: #5d5d66;
+  --iapj-footer-border: rgba(18, 18, 22, 0.12);
 }
 
 :root[data-theme="light"] {
   color-scheme: light;
-  --iapj-bg: #ffffff;
-  --iapj-surface-subtle: #faf9f6;
-  --iapj-surface-elevated: #ffffff;
-  --iapj-overlay-scrim: rgba(17, 17, 17, 0.28);
-
-  --iapj-text-primary: #141413;
-  --iapj-text-body: #3f3e3c;
-  --iapj-text-muted: #767470;
-  --iapj-border: #e8e6e1;
-  --iapj-border-strong: #141413;
-
-  --iapj-accent: #141413;
-  --iapj-accent-contrast: #ffffff;
-  --iapj-link-hover: #575550;
 }
 
 @theme {
   --font-sans: var(--iapj-font-sans);
-  --font-serif: var(--iapj-font-display);
+  --font-serif: var(--iapj-font-serif);
+  --font-mono: var(--iapj-font-mono);
 
   --color-paper: var(--iapj-bg);
   --color-surface-subtle: var(--iapj-surface-subtle);
@@ -113,6 +165,10 @@
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     background-color: var(--iapj-bg);
     color: var(--iapj-text-primary);
@@ -123,7 +179,7 @@
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--iapj-font-display);
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
     text-wrap: balance;
   }
 
@@ -131,6 +187,25 @@
     background-color: var(--iapj-border);
     color: var(--iapj-text-primary);
   }
+}
+
+.iapj-clay-card {
+  background-color: var(--iapj-surface-subtle);
+  border: 1px solid var(--iapj-border);
+  box-shadow: var(--iapj-clay-shadow);
+  transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.iapj-clay-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--iapj-clay-shadow-hover);
+}
+
+.iapj-glass-header {
+  background-color: var(--iapj-glass-bg);
+  border-bottom: 1px solid var(--iapj-glass-border);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
 }
 
 .iapj-prose {

@@ -4,86 +4,199 @@ import type { Article } from "../data/articles";
 import { cn } from "../lib/utils";
 import { resolveMedia } from "../lib/mediaResolver";
 import { FadeImage } from "./FadeImage";
+import { EditorialMediaPlate } from "./EditorialMediaPlate";
 
 interface ArticleCardProps {
   article: Article;
-  featured?: boolean;
-  index: number;
+  variant?: "standard" | "large" | "guide-portrait" | "overlay-banner";
+  index?: number;
+  className?: string;
 }
 
-export function ArticleCard({ article, featured = false, index }: ArticleCardProps) {
+function CardMedia({
+  article,
+  coverSrc,
+  coverAlt,
+  className,
+  loading,
+}: {
+  article: Article;
+  coverSrc: string;
+  coverAlt: string;
+  className?: string;
+  loading: "eager" | "lazy";
+}) {
+  if (coverSrc) {
+    return (
+      <FadeImage
+        src={coverSrc}
+        alt={coverAlt || article.title}
+        className={className}
+        loading={loading}
+      />
+    );
+  }
+  return <EditorialMediaPlate plateKey={article.coverImageRef} alt={article.title} className={className} />;
+}
+
+export function ArticleCard({
+  article,
+  variant = "standard",
+  index = 0,
+  className,
+}: ArticleCardProps) {
   const cover = resolveMedia(article.coverImageRef);
-  const avatar = resolveMedia(article.author.avatarRef);
-  const articleHref = `/essays/${article.slug}`;
+  const articleHref = article.canonicalPath ?? `/blog/${article.slug}`;
+  const chapterLabel =
+    typeof article.chapterNumber === "number"
+      ? `Chapter ${String(article.chapterNumber).padStart(2, "0")}`
+      : null;
+
+  if (variant === "guide-portrait") {
+    return (
+      <motion.article
+        initial={{ opacity: 0, y: 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-60px" }}
+        transition={{ duration: 0.5, delay: index * 0.06, ease: [0.16, 1, 0.3, 1] }}
+        className={cn("group", className)}
+      >
+        <Link
+          to={articleHref}
+          className="relative flex aspect-[3/4] flex-col justify-between overflow-hidden rounded-2xl bg-[var(--iapj-media-backdrop)] p-7 border border-white/10 shadow-xl transition-transform duration-300 group-hover:-translate-y-1"
+        >
+          <CardMedia
+            article={article}
+            coverSrc={cover.src}
+            coverAlt={cover.alt}
+            className="absolute inset-0 h-full w-full object-cover opacity-80 transition-transform duration-700 group-hover:scale-105"
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/30 to-black/85" />
+
+          <div className="relative z-10">
+            <span className="text-xs font-medium tracking-wide text-white/80">
+              {chapterLabel ? `${article.categoryLabel} · ${chapterLabel}` : article.categoryLabel}
+            </span>
+            <h3 className="mt-3 text-2xl font-semibold leading-snug tracking-tight text-white">
+              {article.title}
+            </h3>
+          </div>
+
+          <div className="relative z-10 flex items-center gap-2 text-xs text-white/75 tabular-nums">
+            <span>{article.readTime}</span>
+            <span aria-hidden="true">·</span>
+            <span>Read manual</span>
+          </div>
+        </Link>
+      </motion.article>
+    );
+  }
+
+  if (variant === "overlay-banner") {
+    return (
+      <motion.article
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: index * 0.06, ease: [0.16, 1, 0.3, 1] }}
+        className={cn("group", className)}
+      >
+        <Link
+          to={articleHref}
+          className="relative flex aspect-[16/9] flex-col justify-end overflow-hidden rounded-2xl bg-[var(--iapj-media-backdrop)] p-7 sm:p-9 border border-[var(--iapj-border)] transition-transform duration-300 group-hover:-translate-y-1"
+        >
+          <CardMedia
+            article={article}
+            coverSrc={cover.src}
+            coverAlt={cover.alt}
+            className="absolute inset-0 h-full w-full object-cover opacity-75 transition-transform duration-700 group-hover:scale-105"
+            loading="eager"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-black/15" />
+
+          <div className="relative z-10 max-w-xl">
+            <div className="mb-2 flex items-center gap-2 text-xs font-medium text-white/80 tabular-nums">
+              <span>{article.categoryLabel}</span>
+              {chapterLabel && (
+                <>
+                  <span aria-hidden="true">·</span>
+                  <span>{chapterLabel}</span>
+                </>
+              )}
+              <span aria-hidden="true">·</span>
+              <span>{article.readTime}</span>
+            </div>
+            <h3 className="text-2xl sm:text-3xl font-semibold leading-tight tracking-tight text-white">
+              {article.title}
+            </h3>
+          </div>
+        </Link>
+      </motion.article>
+    );
+  }
 
   return (
     <motion.article
-      initial={{ opacity: 0, y: 18 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: index * 0.08, ease: [0.16, 1, 0.3, 1] }}
-      className={cn(
-        "group flex flex-col gap-6",
-        featured ? "md:flex-row md:items-center md:gap-12" : ""
-      )}
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.5, delay: index * 0.05, ease: [0.16, 1, 0.3, 1] }}
+      className={cn("group flex flex-col", className)}
     >
       <Link
         to={articleHref}
-        className={cn(
-          "block overflow-hidden bg-[var(--iapj-surface-subtle)]",
-          featured ? "aspect-[16/9] md:aspect-[4/3] md:w-3/5" : "aspect-[16/10] w-full"
-        )}
+        className="block aspect-[16/10] overflow-hidden rounded-2xl iapj-clay-card"
       >
-        <FadeImage
-          src={cover.src}
-          alt={cover.alt || article.title}
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-          loading={featured ? "eager" : "lazy"}
+        <CardMedia
+          article={article}
+          coverSrc={cover.src}
+          coverAlt={cover.alt}
+          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+          loading={index < 2 ? "eager" : "lazy"}
         />
       </Link>
 
-      <div className={cn("flex flex-col", featured ? "md:w-2/5" : "")}>
-        <div className="mb-3 flex flex-wrap items-center gap-2 text-xs font-medium tracking-wider text-[var(--iapj-text-muted)]">
-          <span>{article.date}</span>
-          <span aria-hidden="true">·</span>
+      <div className="mt-4 flex flex-col">
+        <div className="flex items-center gap-2 text-xs font-medium text-[var(--iapj-text-muted)] tabular-nums">
           <span>{article.categoryLabel}</span>
+          {chapterLabel && (
+            <>
+              <span aria-hidden="true">·</span>
+              <span>{chapterLabel}</span>
+            </>
+          )}
         </div>
 
-        <Link to={articleHref} className="group-hover:text-[var(--iapj-link-hover)] transition-colors">
-          <h2
+        <Link
+          to={articleHref}
+          className="mt-1.5 group-hover:text-[var(--iapj-link-hover)] transition-colors"
+        >
+          <h3
             className={cn(
-              "font-serif leading-tight text-[var(--iapj-text-primary)]",
-              featured ? "text-3xl md:text-4xl lg:text-[2.65rem] mb-4" : "text-2xl mb-3"
+              "font-semibold leading-snug tracking-tight text-[var(--iapj-text-primary)]",
+              variant === "large" ? "text-2xl sm:text-[1.75rem]" : "text-xl"
             )}
           >
             {article.title}
-          </h2>
+          </h3>
         </Link>
 
-        <p
-          className={cn(
-            "text-[var(--iapj-text-body)] leading-relaxed",
-            featured ? "text-base lg:text-lg mb-6" : "text-sm mb-4 line-clamp-3"
-          )}
-        >
-          {article.excerpt}
-        </p>
+        {variant === "large" && (
+          <p className="mt-2.5 text-sm leading-relaxed text-[var(--iapj-text-body)] line-clamp-2">
+            {article.excerpt}
+          </p>
+        )}
 
-        <div className="mt-auto flex items-center gap-3">
-          <div className="h-8 w-8 shrink-0 overflow-hidden rounded-full bg-[var(--iapj-surface-subtle)]">
-            <FadeImage
-              src={avatar.src}
-              alt={avatar.alt || article.author.name}
-              className="h-full w-full object-cover grayscale"
-            />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-xs font-medium text-[var(--iapj-text-primary)]">
-              {article.author.name}
-            </span>
-            <span className="text-xs text-[var(--iapj-text-muted)] tabular-nums">
-              {article.readTime}
-            </span>
-          </div>
+        <div className="mt-2.5 flex flex-wrap items-center gap-2 text-xs text-[var(--iapj-text-muted)] tabular-nums">
+          <span>Created: {article.date}</span>
+          {article.updatedDate && (
+            <>
+              <span aria-hidden="true">·</span>
+              <span>Updated: {article.updatedDate}</span>
+            </>
+          )}
+          <span aria-hidden="true">·</span>
+          <span>{article.readTime}</span>
         </div>
       </div>
     </motion.article>

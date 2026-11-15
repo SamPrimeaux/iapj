@@ -1,4 +1,5 @@
 import { getSiteManifest } from "../lib/mediaResolver";
+import { buildUxGuideArticles, type MarkdownBlock } from "../lib/uxMarkdownParser";
 
 export interface Author {
   name: string;
@@ -13,7 +14,7 @@ export interface Author {
   }[];
 }
 
-export type ArticleCategory = "sam" | "design";
+export type CategorySlug = "ai" | "runtime" | "ui-ux" | "design-systems" | "platform";
 
 export interface ArticleBullet {
   label?: string;
@@ -61,14 +62,20 @@ export interface Article {
   excerpt: string;
   coverImageRef: string;
   date: string;
+  updatedDate?: string;
   year: string;
   readTime: string;
-  category: ArticleCategory;
+  category: CategorySlug;
   categoryLabel: string;
-  location?: string;
+  isGuide?: boolean;
+  chapterNumber?: number;
+  guideSeries?: "ux-guide";
+  topicGroup?: "process" | "research" | "craft" | "reference";
+  relatedSlugs?: string[];
   author: Author;
   tags: string[];
   sections: ArticleSection[];
+  markdownBlocks?: MarkdownBlock[];
 }
 
 const manifest = getSiteManifest();
@@ -95,19 +102,20 @@ export const articles: Article[] = [
   {
     id: "1",
     slug: "structured-decisions",
-    canonicalPath: "/docs/sam/structured-decisions/",
+    canonicalPath: "/blog/structured-decisions",
     title: "Stop Making LLMs Improvise Everything: How AgentSam Uses Typed Decision Primitives",
     excerpt:
-      "Large language models are extraordinary at open-ended reasoning and code generation. Here is how Systematic Autonomous Machinery (SAM) handles deterministic routing, scoring, confidence checks, and policy gates.",
+      "Pairing generative AI with Systematic Autonomous Machinery (SAM)—a fast, deterministic, typed decision layer for routing, scoring, confidence checks, and policy gates.",
     coverImageRef: "media://cover-structured-decisions",
-    date: "November 10, 2026",
+    date: "Nov 10, 2026",
+    updatedDate: "Nov 12, 2026",
     year: "2026",
     readTime: "10 min read",
-    category: "sam",
-    categoryLabel: "Agent Architecture",
-    location: "/docs/sam/structured-decisions/",
+    category: "ai",
+    categoryLabel: "AI",
+    isGuide: true,
     author: defaultAuthor,
-    tags: ["Agent Architecture", "SAM", "TypeScript"],
+    tags: ["SAM Architecture", "AgentSam", "TypeScript"],
     sections: [
       {
         paragraphs: [
@@ -154,31 +162,11 @@ export const articles: Article[] = [
         table: {
           headers: ["Engineering Question", "Execution Layer", "Why"],
           rows: [
-            [
-              "\"Explain why this terminal session failed.\"",
-              "LLM",
-              "Requires open-ended synthesis and human-readable diagnosis."
-            ],
-            [
-              "\"Which execution lane should handle this command?\"",
-              "choice primitive",
-              "Finite set of known runtime targets (local, remote, sandbox)."
-            ],
-            [
-              "\"How risky is this deployment?\"",
-              "score primitive",
-              "Maps observable repo and test metrics onto a bounded numeric rubric."
-            ],
-            [
-              "\"Is confidence high enough to act without asking?\"",
-              "gate primitive",
-              "Converts risk, reversibility, and policy into an explicit permission check."
-            ],
-            [
-              "\"Rewrite this package boundary cleanly.\"",
-              "LLM + Tools",
-              "Requires multi-file code generation and architectural judgment."
-            ]
+            ["\"Explain why this terminal session failed.\"", "LLM", "Requires open-ended synthesis and human-readable diagnosis."],
+            ["\"Which execution lane should handle this command?\"", "choice primitive", "Finite set of known runtime targets (local, remote, sandbox)."],
+            ["\"How risky is this deployment?\"", "score primitive", "Maps observable repo and test metrics onto a bounded numeric rubric."],
+            ["\"Is confidence high enough to act without asking?\"", "gate primitive", "Converts risk, reversibility, and policy into an explicit permission check."],
+            ["\"Rewrite this package boundary cleanly.\"", "LLM + Tools", "Requires multi-file code generation and architectural judgment."]
           ]
         }
       },
@@ -214,25 +202,9 @@ export const articles: Article[] = [
         }
       },
       {
-        subheading: "Primitive 2: Choice",
+        subheading: "Primitive 2: Choice & Primitive 3: Score",
         paragraphs: [
-          "A choice selects one winner from a finite candidate list when AgentSam already knows the legal options—such as picking a retrieval lane, terminal target, or model class."
-        ],
-        code: {
-          language: "json",
-          label: "choice-result.json",
-          content: `{
-  "question": "Which execution lane should run this task?",
-  "options": ["local", "remote", "sandbox"],
-  "result": "local",
-  "confidence": 0.94
-}`
-        }
-      },
-      {
-        subheading: "Primitive 3: Score",
-        paragraphs: [
-          "A score maps current state onto a normalized 0..1 rubric. Numeric scoring lets AgentSam compare competing actions mathematically or enforce hard thresholds without coaxing an LLM into emitting JSON-shaped prose."
+          "A choice selects one winner from a finite candidate list, while a score maps current state onto a normalized 0..1 rubric so competing actions can be compared mathematically."
         ],
         code: {
           language: "typescript",
@@ -247,27 +219,9 @@ export const articles: Article[] = [
         }
       },
       {
-        subheading: "Primitive 4: Gate",
+        subheading: "Primitive 4: Gate & Primitive 5: Confidence",
         paragraphs: [
-          "A gate turns a structured assessment into explicit permission to proceed. Gates protect high-consequence operations: production writes, secret rotations, package releases, destructive database migrations, or expensive long-running jobs."
-        ],
-        code: {
-          language: "plaintext",
-          label: "Permission Gate Flow",
-          content: `candidate action
-     │
-     ▼
-risk score ───────┐
-confidence ───────┤
-tests/status ─────┤──► gate policy ──► allow
-approval state ───┤                 └─► ask user
-reversibility ────┘                 └─► deny`
-        }
-      },
-      {
-        subheading: "Primitive 5: Confidence",
-        paragraphs: [
-          "Confidence is not a substitute for correctness—it is a routing signal. What matters is how AgentSam adapts its behavior when certainty drops:"
+          "A gate turns a structured assessment into explicit permission to proceed, while confidence signals whether the agent should execute immediately, gather one more check, or escalate to the operator."
         ],
         table: {
           headers: ["Confidence Level", "System Behavior"],
@@ -279,59 +233,7 @@ reversibility ────┘                 └─► deny`
         }
       },
       {
-        heading: "4. Six Production Patterns for Autonomous Workflows",
-        bullets: [
-          {
-            label: "Pattern A — Intent Routing",
-            text: "Classify incoming requests into a known execution family (code, research, terminal, database, deploy, design, document) before invoking heavy language models."
-          },
-          {
-            label: "Pattern B — Utility Scoring",
-            text: "When multiple candidate actions can advance a goal, utility scoring lets them compete transparently using explicit, configurable policy weights rather than hidden prompt magic."
-          },
-          {
-            label: "Pattern C — GOAP Action Selection",
-            text: "Goal-Oriented Action Planning generates valid action sequences from preconditions and effects, then ranks candidate plans mathematically."
-          },
-          {
-            label: "Pattern D — Retrieval Routing",
-            text: "Route each question to its authoritative corpus first—AST graph for symbols, memory for past decisions, repo docs for contracts, fresh web docs for provider support."
-          },
-          {
-            label: "Pattern E — Terminal Lane Selection",
-            text: "Inspect file locality, trust boundaries, and machine availability to pick between local, remote, and sandbox execution."
-          },
-          {
-            label: "Pattern F — Dynamic Approval Gates",
-            text: "Low risk + reversible + high confidence executes immediately; high consequence or irreversible requires explicit human approval."
-          }
-        ],
-        code: {
-          language: "typescript",
-          label: "Utility Formula",
-          content: `utility =
-  (goalProgress  * 0.40) +
-  (confidence    * 0.20) +
-  (reversibility * 0.15) +
-  (speed         * 0.15) -
-  (risk          * 0.25) -
-  (cost          * 0.10);`
-        }
-      },
-      {
-        heading: "5. Real-World AgentSam Applications & Eight Design Rules",
-        paragraphs: [
-          "Across skill selection, fail-closed model tier routing, and package release gates, keeping structured control separate from generative synthesis keeps behavior fast, auditable, and resilient."
-        ],
-        table: {
-          headers: ["Task Shape", "Recommended Model Class"],
-          rows: [
-            ["Small edit, extraction, or classification", "fast"],
-            ["Standard coding and multi-step planning", "standard"],
-            ["Deep architectural reasoning", "reasoning / heavy"],
-            ["Private, local, or offline work", "local (when capable)"]
-          ]
-        },
+        heading: "4. Eight Design Rules for Structured Systems",
         bullets: [
           { label: "01. Constrain the output space", text: "Use typed decisions only when legal outputs are genuinely bounded." },
           { label: "02. Keep state explicit", text: "Never bury critical runtime facts inside sprawling system prompts." },
@@ -349,19 +251,20 @@ reversibility ────┘                 └─► deny`
   {
     id: "2",
     slug: "infrastructure-cookbooks",
-    canonicalPath: "/docs/sam/infrastructure-cookbooks/",
+    canonicalPath: "/blog/infrastructure-cookbooks",
     title: "Beyond Brute-Force Prompting: 9 Engineering Drills to Prove Your Agent Understands Large Codebases",
     excerpt:
-      "A command exiting with code 0 does not prove an autonomous coding agent did good work. Nine hands-on drills and a 10-point scorecard to benchmark precision, blast radius, and restraint.",
+      "A command exiting with code 0 does not prove an autonomous coding agent did good work. Nine hands-on drills and a 10-point scorecard to benchmark precision and restraint.",
     coverImageRef: "media://cover-infra-cookbooks",
-    date: "November 6, 2026",
+    date: "Nov 6, 2026",
+    updatedDate: "Nov 8, 2026",
     year: "2026",
     readTime: "12 min read",
-    category: "sam",
-    categoryLabel: "Systematic Autonomous Machinery",
-    location: "/docs/sam/infrastructure-cookbooks/",
+    category: "ai",
+    categoryLabel: "AI",
+    isGuide: true,
     author: defaultAuthor,
-    tags: ["SAM", "Benchmarking", "Infrastructure"],
+    tags: ["SAM Architecture", "Benchmarking", "Infrastructure"],
     sections: [
       {
         paragraphs: [
@@ -428,28 +331,13 @@ agentsam search "terminal enrollment authentication" \\
         }
       },
       {
-        heading: "Drills 05–09: GOAP Planning, Release Gates, Security & Recovery",
+        heading: "Drills 05–09 & The 10-Point Benchmark Scorecard",
         bullets: [
           { label: "Drill 05 — Deterministic GOAP Planning", text: "Identical repository states yield identical plans, costs, and preconditions via `agentsam brand plan --goap --json`." },
           { label: "Drill 06 — Package-Release Torture Test", text: "Single-point failures in exports, pack checks, or boundary checks are isolated directly by native repo scripts." },
           { label: "Drill 07 — Security & Trust-Boundary Drill", text: "Combines AST and Merkle evidence (`agentsam security scan --path . --json`) to catch client/server leaks early." },
           { label: "Drill 08 — Local vs. Remote Parity", text: "Verifies git HEAD, node version, and working tree status before treating execution lanes as interchangeable." },
           { label: "Drill 09 — Failure-Recovery Loop", text: "Targeted stage classification and evidence extraction rather than speculative multi-file rewrites." }
-        ],
-        code: {
-          language: "bash",
-          label: "Package Release Torture Suite",
-          content: `npm run verify:package
-npm run pack:check
-npm run test:workspaces
-npm run verify:boundaries
-npm run verify:release`
-        }
-      },
-      {
-        heading: "Reusable Operator Prompt & 10-Point SAM Benchmark Scorecard",
-        paragraphs: [
-          "When tackling high-stakes infrastructure migrations—such as identity authority moves, terminal runtime upgrades, or release pipeline changes—enforce the full Inspect → Implement → Verify → Receipt lifecycle."
         ],
         table: {
           headers: ["Dimension", "Core Evaluation Question"],
@@ -476,19 +364,19 @@ npm run verify:release`
   {
     id: "3",
     slug: "native-runtime",
-    canonicalPath: "/docs/sam/native-runtime/",
+    canonicalPath: "/blog/native-runtime",
     title: "Go Where Machine Work Benefits From Go: Inside AgentSam’s Hybrid Edge-to-Local Runtime",
     excerpt:
       "TypeScript remains the single protocol contract authority while a native Go runtime executes high-frequency SHA-256 hashing, static inspections, and persistent daemon work.",
     coverImageRef: "media://cover-native-runtime",
-    date: "November 2, 2026",
+    date: "Nov 2, 2026",
+    updatedDate: "Nov 4, 2026",
     year: "2026",
     readTime: "7 min read",
-    category: "sam",
-    categoryLabel: "Runtime & Systems Engineering",
-    location: "/docs/sam/native-runtime/",
+    category: "runtime",
+    categoryLabel: "Edge & Runtime",
     author: defaultAuthor,
-    tags: ["Go", "Cloudflare Workers", "Runtime"],
+    tags: ["Edge & Runtime", "Go", "Cloudflare Workers"],
     sections: [
       {
         paragraphs: [
@@ -511,9 +399,6 @@ npm run verify:release`
       },
       {
         heading: "2. Three Deployment & Ownership Modes, One Shared Contract",
-        paragraphs: [
-          "Whether running on a maintainer's laptop, inside a local Wrangler dev loop, or at the Cloudflare edge, the Go binary adheres to the exact same behavioral contract."
-        ],
         bullets: [
           { label: "Mode 1 — Local Native Development", text: "Compile and run directly on bare metal with an automated handshake verifying source identity matches the active repository." },
           { label: "Mode 2 — Cloudflare Edge Development", text: "Wrangler runs the TypeScript Worker edge adapter bound to the GO_RUNTIME Container for pre-flight integration verification." },
@@ -546,17 +431,20 @@ npm run verify:release`
   {
     id: "4",
     slug: "essential-ux-design-principles",
+    canonicalPath: "/blog/essential-ux-design-principles",
     title: "The 7 Essential UX Design Principles: A Master Guide for Developers & Designers",
     excerpt:
-      "A canonical reference covering User-Centricity, Consistency, Hierarchy, Context, User Control, Accessibility, and Usability—plus the Clay-style editorial structure for dual human and AI audiences.",
+      "A canonical reference covering User-Centricity, Consistency, Hierarchy, Context, User Control, Accessibility, and Usability—plus the editorial structure for dual human and AI audiences.",
     coverImageRef: "media://cover-ux-principles",
-    date: "October 28, 2026",
+    date: "Oct 28, 2026",
+    updatedDate: "Nov 1, 2026",
     year: "2026",
     readTime: "9 min read",
-    category: "design",
-    categoryLabel: "UI/UX & Editorial Systems",
+    category: "ui-ux",
+    categoryLabel: "UI/UX Guides",
+    isGuide: true,
     author: defaultAuthor,
-    tags: ["UX Design", "Editorial", "Architecture"],
+    tags: ["UI/UX Guides", "Hierarchy", "Accessibility"],
     sections: [
       {
         paragraphs: [
@@ -599,7 +487,7 @@ npm run verify:release`
           "Yes. As artificial intelligence, multimodal interfaces, and automated workflows alter the digital landscape, these 7 core principles become even more critical. When AI generates content dynamically behind the scenes, leaning heavily on Hierarchy (what to show first), User Control (overriding automation), and Consistency (predictable UI patterns) keeps users feeling empowered rather than replaced."
         ],
         callout: {
-          label: "The Anatomy of a Clay-Style Design Article",
+          label: "The Anatomy of an Editorial Design Article",
           text: "Start with a high-impact editorial hook, break ideas into modular numbered blocks (3–4 lines max per paragraph), pair every section with real-world product proof, and close with an actionable Golden Rule."
         }
       },
@@ -619,15 +507,17 @@ npm run verify:release`
   {
     id: "5",
     slug: "asbd-design-system",
+    canonicalPath: "/blog/asbd-design-system",
     title: "ASBD Dual-Mode Color Spec & AgentSam Learn Hero Architecture",
     excerpt:
       "Calibrating WCAG AA-compliant violet accents across light and dark surfaces, syncing user appearance preferences with zero flash, and composing an asymmetric split media hero.",
     coverImageRef: "media://cover-asbd-hero",
-    date: "October 22, 2026",
+    date: "Oct 22, 2026",
+    updatedDate: "Oct 25, 2026",
     year: "2026",
     readTime: "8 min read",
-    category: "design",
-    categoryLabel: "Design Systems & Tokens",
+    category: "design-systems",
+    categoryLabel: "Design Systems",
     author: defaultAuthor,
     tags: ["Design Systems", "CSS Tokens", "Hero Spec"],
     sections: [
@@ -688,17 +578,19 @@ export function applyUserColorMode(mode: ColorModePreference): void {
   {
     id: "6",
     slug: "cms-footer-and-asset-architecture",
+    canonicalPath: "/blog/cms-footer-and-asset-architecture",
     title: "Multi-Domain CMS Sections: Separating Platform Chrome from Merchant Themes",
     excerpt:
       "Don't standardize HTML layouts across themes—standardize the CMS data contract and logical media_asset IDs so every domain can re-theme freely with zero hardcoded URLs.",
     coverImageRef: "media://cover-cms-platform",
-    date: "October 14, 2026",
+    date: "Oct 14, 2026",
+    updatedDate: "Oct 18, 2026",
     year: "2026",
     readTime: "6 min read",
-    category: "design",
-    categoryLabel: "Platform Architecture",
+    category: "platform",
+    categoryLabel: "CMS & Themes",
     author: defaultAuthor,
-    tags: ["CMS", "IAPJ", "Themes"],
+    tags: ["CMS & Themes", "IAPJ", "Architecture"],
     sections: [
       {
         paragraphs: [
@@ -753,3 +645,8 @@ export function applyUserColorMode(mode: ColorModePreference): void {
     ]
   }
 ];
+
+export const uxGuideArticles: Article[] = buildUxGuideArticles(defaultAuthor);
+
+articles.push(...uxGuideArticles);
+
