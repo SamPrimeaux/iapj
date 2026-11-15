@@ -27,7 +27,7 @@ function CategoryShortcutRedirect() {
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <ScrollToTop />
       <Routes>
         {/* Canonical Blog & Portfolio Routes */}
